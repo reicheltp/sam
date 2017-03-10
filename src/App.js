@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
+import { Music } from './services';
 
 class App extends Component {
+
   render() {
     return (
       <View style={styles.container}>
@@ -15,6 +18,10 @@ class App extends Component {
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
         </Text>
+        <Button
+          title="refresh"
+          onPress={() => Music.refreshSongs()}
+        />
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
