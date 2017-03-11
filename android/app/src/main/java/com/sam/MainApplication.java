@@ -8,6 +8,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.peel.react.TcpSocketsModule;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.dantecervantes.react.FilesPackage;
+import com.rnfs.RNFSPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -28,6 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RealmReactPackage(),
+            new VectorIconsPackage(),
+            new TcpSocketsModule(),
+            new RNSoundPackage(),
+            new FilesPackage(),
+            new RNFSPackage(),
             new RNSoundPackage(),
             new RealmReactPackage(),
             new VectorIconsPackage(),
