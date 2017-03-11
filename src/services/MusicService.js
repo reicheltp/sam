@@ -17,6 +17,7 @@ export const TrackSchema = {
     cover: {type: 'string', optional: true},
     blur: {type: 'string', optional: true},
     path: 'string',
+    isSelected: {type: 'bool', default: false},
   },
 };
 
@@ -41,6 +42,14 @@ class MusicService {
 
   getTrack(trackId) {
     return this.realm.objectForPrimaryKey(TrackSchema.name, trackId);
+  }
+
+  setSelected(trackId){
+    this.realm.write(() => {
+      this.tracks.forEach(val => {
+        val.isSelected = val.id == trackId;
+      });
+    });
   }
 
   async refreshSongs() {

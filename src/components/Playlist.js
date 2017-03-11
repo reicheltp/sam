@@ -16,11 +16,23 @@ import {Music, Player} from '../services';
 class Playlist extends Component {
   constructor() {
     super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     this.state = {
-      tracks: ds.cloneWithRows(Music.tracks)
+      tracks: this.ds.cloneWithRows(Music.tracks)
     };
+  }
+
+  componentDidMount(){
+    this.trackSub = Player.trackChanged.subscribe(id => {
+       this.setState({tracks: this.ds.cloneWithRows(Music.tracks)})
+    });
+  }
+
+  componentWillUnmount(){
+    if(this.trackSub){
+      this.trackSub.unsubscribe();
+    }
   }
 
   onPress(track) {
@@ -35,7 +47,7 @@ class Playlist extends Component {
           renderRow={track =>
             <TrackCell
               track={track}
-              isPlaying={Player.currentTrack.id == track.id}
+              isPlaying={track.isSelected}
               onPress={() => this.onPress(track)} />
           }
         />
