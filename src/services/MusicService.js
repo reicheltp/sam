@@ -14,8 +14,7 @@ export const TrackSchema = {
     album: {type: 'string', optional: true},
     genre: {type: 'string', optional: true},
     duration: 'int',
-    cover: {type: 'string', optional: true},
-    blur: {type: 'string', optional: true},
+    cover: {type: 'data', optional: true},
     path: 'string',
     isSelected: {type: 'bool', default: false},
   },
@@ -74,6 +73,11 @@ class MusicService {
             success.forEach(track => {
               track.id = Number(track.id);
               track.duration = Number(track.duration);
+              try{
+                track.cover = 
+              } catch (err) {
+
+              }
               this.realm.create(TrackSchema.name, track);
             });
           });
