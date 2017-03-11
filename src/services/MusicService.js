@@ -1,3 +1,5 @@
+/* @flow */
+
 import Realm from 'realm'
 import MusicFiles from 'react-native-get-music-files';
 import {PermissionsAndroid} from 'react-native';
@@ -33,6 +35,12 @@ class MusicService {
     this.realm = new Realm({
       schema: [TrackSchema, PlaylistSchema],
     });
+
+    this.tracks = this.realm.objects(TrackSchema.name);
+  }
+
+  getTrack(trackId) {
+    return this.realm.objectForPrimaryKey(TrackSchema.name, trackId);
   }
 
   async refreshSongs() {
@@ -51,9 +59,15 @@ class MusicService {
         (success) => {
           console.warn(`found ${success.length}`);
 
-          // this.realm.write(() => {
-          //   this.realm.create(TrackSchema.name, success);
-          // });
+          console.log("tracks: " + JSON.stringify( success));
+
+          this.realm.write(() => {
+            success.forEach(track => {
+              track.id = Number(track.id);
+              track.duration = Number(track.duration);
+              this.realm.create(TrackSchema.name, track);
+            });
+          });
         },
         (error) => {
           console.warn(`found no ${error}`);
