@@ -71,4 +71,6 @@ export function TrackCell({track, onPress, isPlaying}) {
   );
 }
 
+Playlist.TrackCell = TrackCell;
+
 export default Playlist;

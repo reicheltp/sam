@@ -9,13 +9,31 @@ import {
 } from 'react-native-elements';
 
 import {Settings, Playlist} from './components';
+import {Player} from "./services";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       selectedTab: 'playlist',
+      track: Player.currentTrack,
+      isPlaying: Player.isPlaying.valueOf(),
     }
+  }
+
+  componentDidMount() {
+    this.trackSub = Player.trackChanged.subscribe(() => {
+      this.setState({track: Player.currentTrack});
+    })
+
+    this.playSub = Player.isPlaying.subscribe(val => {
+      this.setState({isPlaying: val});
+    })
+  }
+
+  componentWillUnmound() {
+    this.trackSub.unsubscribe();
+    this.playSub.unsubscribe();
   }
 
   changeTab(selectedTab) {
@@ -27,13 +45,35 @@ class App extends Component {
 
     return (
       <View style={styles.container}>
+        {this.state.track &&
+          <View style={{flexDirection:'row'}}>
+            <View style={{flex:1}}>
+              <Playlist.TrackCell track={this.state.track} isPlaying/>
+            </View>
+            { this.state.isPlaying ?
+                <Icon
+                  name="pause"
+                  containerStyle={styles.playIcon}
+                  onPress={() => Player.pause()}/> :
+              <Icon
+                name="play-arrow"
+                containerStyle={styles.playIcon}
+                onPress={() => Player.play()}/>
+            }
+            <Icon
+              name="skip-next"
+              containerStyle={styles.playIcon}
+              onPress={() => Player.next()}/>
+          </View>
+        }
+
         <Tabs>
           <Tab
             selected={selectedTab === 'playlist'}
             renderIcon={() => <Icon containerStyle={styles.tabIcon} color={'#5e6977'} name='library-music' size={30} />}
             renderSelectedIcon={() => <Icon containerStyle={styles.tabIcon}  color={'#FF5722'} name='library-music' size={30} />}
             onPress={() => this.changeTab('playlist')}>
-            <Playlist />
+              <Playlist />
           </Tab>
           <Tab
             titleStyle={{fontWeight: 'bold', fontSize: 10}}
@@ -55,7 +95,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: 'pink',
+    backgroundColor: 'white',
+  },
+  playIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 12
   },
   tabIcon: {
     justifyContent: 'center',

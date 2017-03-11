@@ -6,9 +6,13 @@ import MusicService from './MusicService'
 class PlayerService {
   constructor(music: MusicService){
     this.music = music;
-    this.currentTrack = { };
+
+    let track = this.music.tracks.filtered("isSelected == true").slice(0,1);
+
+    this.currentTrack = track ? track : { };
 
     this.trackChanged = new Rx.Subject();
+    this.isPlaying = new Rx.BehaviorSubject(false);
   }
 
   next(){
@@ -19,12 +23,14 @@ class PlayerService {
   pause(){
     if(this.currentSong) {
       this.currentSong.pause();
+      this.isPlaying.next(false);
     }
   }
 
   stop(){
     if(this.currentSong){
       this.currentSong.stop();
+      this.isPlaying.next(false);
     }
   }
 
@@ -33,6 +39,7 @@ class PlayerService {
       // continue current song
       if(this.currentSong){
         this.currentSong.play();
+        this.isPlaying.next(true);
       }
 
       return;
@@ -49,8 +56,6 @@ class PlayerService {
         console.warn("error: " + err);
         return;
       }
-
-      console.warn('duration in seconds: ' + song.getDuration() + 'number of channels: ' + song.getNumberOfChannels());
 
       if(this.currentSong){
         try{
@@ -70,9 +75,8 @@ class PlayerService {
       });
 
       this.currentSong = song;
-
+      this.isPlaying.next(true);
     });
-
   }
 }
 
