@@ -11,7 +11,33 @@ class PlayerService {
     this.trackChanged = new Rx.Subject();
   }
 
+  next(){
+    let next = Math.floor((Math.random() * this.music.tracks.length));
+    this. play(this.music.tracks[next].id);
+  }
+
+  pause(){
+    if(this.currentSong) {
+      this.currentSong.pause();
+    }
+  }
+
+  stop(){
+    if(this.currentSong){
+      this.currentSong.stop();
+    }
+  }
+
   play(trackId) {
+    if(!trackId){
+      // continue current song
+      if(this.currentSong){
+        this.currentSong.play();
+      }
+
+      return;
+    }
+
     let track = this.music.getTrack(trackId);
 
     this.currentTrack = track;
@@ -37,7 +63,7 @@ class PlayerService {
 
       song.play((success) => {
         if (success) {
-          console.warn('successfully finished playing');
+          this.next();
         } else {
           console.warn('playback failed due to audio decoding errors');
         }

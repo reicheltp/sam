@@ -41,7 +41,7 @@ class Playlist extends Component {
 
   render() {
     return (
-      <List containerStyle={{flex:1}}>
+      <List containerStyle={{flex:1, marginTop: 0}}>
         <ListView
           dataSource={this.state.tracks}
           renderRow={track =>
